@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanggar Seni Pasuk Wetu - V21</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }
+        h1 { color: #1a252f; text-align: center; border-bottom: 3px solid #27ae60; padding-bottom: 8px; margin-bottom: 20px; }
+        h2, h3 { color: #2c3e50; }
+        
+        /* Tabs System */
+        .tab { overflow: hidden; border: 1px solid #ccc; background-color: #2c3e50; border-radius: 8px 8px 0 0; display: flex; flex-wrap: wrap; }
+        .tab button { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 12px 14px; transition: 0.3s; font-size: 13px; font-weight: bold; color: #ecf0f1; }
+        .tab button:hover { background-color: #34495e; }
+        .tab button.active { background-color: white; color: #27ae60; border-bottom: 3px solid #27ae60; }
+        .tabcontent { display: none; padding: 20px; border: 1px solid #ccc; border-top: none; background: white; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        
+        /* Form & Inputs */
+        .form-group { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .form-item { flex: 1; min-width: 200px; }
+        label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 5px; color: #4a5568; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        button.action-btn { background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button.action-btn:hover { background-color: #219150; }
+        
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+        th, td { border: 1px solid #e2e8f0; padding: 9px; text-align: left; }
+        th { background-color: #2c3e50; color: white; }
+        tr:nth-child(even) { background-color: #f8f9fa; }
+        
+        /* Badges & Cards */
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; display: inline-block; }
+        .bg-green { background-color: #27ae60; } .bg-red { background-color: #e74c3c; } .bg-blue { background-color: #3498db; } .bg-purple { background-color: #8e44ad; } .bg-orange { background-color: #d35400; } .bg-teal { background-color: #008080; }
+        
+        .summary-grid { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .card { flex: 1; background: #fff; border: 1px solid #e2e8f0; padding: 12px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); min-width: 170px; text-align: center; }
+        .card h4 { margin: 0 0 8px 0; color: #7f8c8d; font-size: 11px; text-transform: uppercase; }
+        .card p { margin: 0; font-size: 17px; font-weight: bold; color: #2c3e50; }
+        .note-box { background: #eaf2f8; border-left: 4px solid #3498db; padding: 10px; margin-bottom: 15px; font-size: 12px; border-radius: 0 4px 4px 0; }
+        
+        /* Schedule Layout */
+        .schedule-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 15px; align-items: start; }
+        .day-column { background: #fff; border: 1px solid #cbd5e0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; display: flex; flex-direction: column; }
+        .day-header { background: #2c3e50; color: white; padding: 10px 12px; font-weight: bold; text-align: center; font-size: 14px; text-transform: uppercase; }
+        .day-body { padding: 10px; min-height: 200px; background: #fafbfc; display: flex; flex-direction: column; gap: 8px; }
+        .slot-card { background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #3498db; padding: 8px 10px; border-radius: 5px; font-size: 12px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .slot-card.privat { border-left-color: #8e44ad; background: #fcf5ff; }
+        .slot-card.reguler { border-left-color: #3498db; background: #f0f7ff; }
+        .slot-time { font-weight: bold; color: #2c3e50; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #cbd5e0; padding-bottom: 3px; }
+        .slot-details { color: #4a5568; margin-top: 4px; }
+        .del-slot { background: #e74c3c; color: white; border: none; padding: 2px 5px; border-radius: 3px; cursor: pointer; font-size: 9px; }
+        .btn-edit { background: #f39c12; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; margin-right: 4px; }
+        .btn-del { background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; }
+    </style>
+</head>
+<body>
+
+    <h1>🎭 Sanggar Seni Pasuk Wetu</h1>
+
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Tab1')" id="defaultOpen">1. Absensi & TopUp</button>
+        <button class="tablinks" onclick="openTab(event, 'Tab2')">2. Bayar SPP Reguler</button>
+        <button class="tablinks" onclick="openTab(event, 'Tab3')">3. Monitor SPP</button>
+        <button class="tablinks" onclick="openTab(event, 'Tab4')">4. Keuangan & Honor (80/20)</button>
+        <button class="tablinks" onclick="openTab(event, 'Tab5')">5. Kas Sanggar & Hutang</button>
+        <button class="tablinks" onclick="openTab(event, 'Tab6')">6. Jadwal Latihan</button>
+        <button class="tablinks" onclick="openTab(event, 'Tab7')">7. Database Murid</button>
+    </div>
+
+    <!-- TAB 1: ABSENSI & TOP UP -->
+    <div id="Tab1" class="tabcontent">
+        <h3>Top Up Saldo Kuota Pertemuan (Otomatis Konversi)</h3>
+        <div class="note-box">📌 Sistem otomatis membagi nominal top-up dengan biaya per sesi murid untuk menghasilkan jumlah pertemuan.</div>
+        <div class="form-group">
+            <div class="form-item"><label>Pilih Murid:</label><select id="topupMurid" onchange="hitungTopup()"><option value="">-- Pilih Murid --</option></select></div>
+            <div class="form-item"><label>Nominal Pembayaran (Rp):</label><input type="number" id="topupNominal" placeholder="Contoh: 300000" oninput="hitungTopup()"></div>
+            <div class="form-item"><label>Konversi Otomatis:</label><input type="text" id="topupHasil" readonly style="background-color: #edf2f7; font-weight: bold; color: #27ae60;"></div>
+        </div>
+        <button class="action-btn" onclick="simpanTopup()">💰 Proses Top Up Saldo</button>
+        
+        <hr style="margin: 25px 0;">
+
+        <h3>Form Absensi Harian & Pemotongan Kuota</h3>
+        <div class="form-group">
+            <div class="form-item"><label>Tanggal Absen:</label><input type="date" id="absTgl"></div>
+            <div class="form-item"><label>Murid:</label><select id="absMurid"><option value="">-- Pilih Murid --</option></select></div>
+            <div class="form-item">
+                <label>Pelatih Bertugas:</label>
+                <select id="absPelatih"><option value="Ganggas">Ganggas</option><option value="Bayu">Bayu</option></select>
+            </div>
+        </div>
+        <button class="action-btn" onclick="simpanAbsen()" style="background-color: #8e44ad;">✔️ Catat Absensi</button>
+    </div>
+
+    <!-- TAB 2: PEMBAYARAN SPP -->
+    <div id="Tab2" class="tabcontent">
+        <h3>Input Pembayaran SPP Bulanan (Khusus Kelas Reguler)</h3>
+        <div class="note-box">📌 <strong>Ketentuan:</strong> Nominal SPP ditarik otomatis dari database murid. Pilih pelatih penanggung jawab.</div>
+        <div class="form-group">
+            <div class="form-item"><label>Pilih Bulan SPP:</label><input type="month" id="sppBulan"></div>
+            <div class="form-item"><label>Murid Reguler:</label><select id="sppMurid" onchange="autoIsiSppNominal()"><option value="">-- Pilih Murid Reguler --</option></select></div>
+            <div class="form-item"><label>Pelatih Penanggung Jawab:</label><select id="sppPelatih"><option value="Ganggas">Ganggas</option><option value="Bayu">Bayu</option></select></div>
+            <div class="form-item"><label>Nominal SPP (Otomatis dari DB):</label><input type="number" id="sppNominal" readonly style="background-color: #edf2f7; font-weight:bold;"></div>
+        </div>
+        <button class="action-btn" onclick="simpanSpp()">💳 Simpan Pembayaran SPP</button>
+    </div>
+
+    <!-- TAB 3: MONITORING SPP -->
+    <div id="Tab3" class="tabcontent">
+        <h3>Monitoring Status Pembayaran SPP Reguler</h3>
+        <div class="note-box">📌 Anda dapat mengubah atau memperbarui status pembayaran SPP langsung dari tabel di bawah ini.</div>
+        <div class="form-group" style="max-width: 300px;">
+            <div class="form-item"><label>Filter Bulan:</label><input type="month" id="monitorBulan" onchange="renderMonitorSpp()"></div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama Murid</th><th>Instrumen</th><th>Status SPP Bulan Ini</th><th>Nominal</th><th>Pelatih Penerima</th><th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="tblMonitorSpp"></tbody>
+        </table>
+    </div>
+
+    <!-- TAB 4: KEUANGAN & HONOR (80/20) -->
+    <div id="Tab4" class="tabcontent">
+        <h3>Laporan Keuangan & Honor Pelatih (Pemisahan Kas Bayu & Ganggas)</h3>
+        <div class="form-group" style="max-width: 300px;">
+            <div class="form-item"><label>Filter Bulan Laporan:</label><input type="month" id="lapBulan" onchange="renderLaporan()"></div>
+        </div>
+        
+        <div class="summary-grid">
+            <div class="card"><h4>Honor Bersih Ganggas (80%)</h4><p id="totGanggas" style="color:#27ae60;">Rp 0</p></div>
+            <div class="card"><h4>Kas Masuk dari Ganggas (20%)</h4><p id="kasGanggas" style="color:#d35400;">Rp 0</p></div>
+            <div class="card"><h4>Honor Bersih Bayu (80%)</h4><p id="totBayu" style="color:#27ae60;">Rp 0</p></div>
+            <div class="card"><h4>Kas Masuk dari Bayu (20%)</h4><p id="kasBayu" style="color:#d35400;">Rp 0</p></div>
+            <div class="card" style="background:#edf2f7;"><h4>Total Perputaran Transaksi</h4><p id="totGlobal">Rp 0</p></div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tanggal/Bulan</th><th>Tipe</th><th>Murid</th><th>Pelatih</th><th>Total Biaya</th><th>Kas (20%)</th><th>Honor (80%)</th><th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="tblLaporan"></tbody>
+        </table>
+    </div>
+
+    <!-- TAB 5: KAS SANGGAR & HUTANG -->
+    <div id="Tab5" class="tabcontent">
+        <h3>Manajemen Kas Sanggar, Aliran Kas Per Bulan, & Hutang Sanggar</h3>
+        
+        <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
+            <div class="card" style="flex:1;"><h4>Saldo Kas Sanggar Saat Ini</h4><p id="saldoKasSanggar" style="color:#27ae60; font-size:22px;">Rp 0</p></div>
+            <div class="card" style="flex:1;"><h4>Total Sisa Hutang Sanggar</h4><p id="totalSisaHutang" style="color:#e74c3c; font-size:22px;">Rp 0</p></div>
+        </div>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px; background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #cbd5e0;">
+                <h4 style="margin-top:0; color:#2c3e50;">Pencatatan Kas Sanggar (Masuk / Keluar)</h4>
+                <div class="form-item" style="margin-bottom:10px;"><label>Jenis Transaksi:</label><select id="kasJenis"><option value="Pemasukan">Pemasukan Kas</option><option value="Pengeluaran">Pengeluaran / Keperluan</option></select></div>
+                <div class="form-item" style="margin-bottom:10px;"><label>Sumber / Ditujukan ke:</label><input type="text" id="kasSumber" placeholder="Contoh: Dari Kas Bayu / Beli Alat"></div>
+                <div class="form-item" style="margin-bottom:10px;"><label>Uraian / Keperluan:</label><input type="text" id="kasKeperluan" placeholder="Pembelian senar / perawatan gamelan"></div>
+                <div class="form-item" style="margin-bottom:10px;"><label>Nominal (Rp):</label><input type="number" id="kasNominal" placeholder="Contoh: 150000"></div>
+                <button class="action-btn" onclick="tambahKasSanggar()">➕ Simpan Transaksi Kas</button>
+            </div>
+
+            <div style="flex: 1; min-width: 300px; background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #cbd5e0;">
+                <h4 style="margin-top:0; color:#2c3e50;">Pencatatan Hutang & Angsuran Pelunasan</h4>
+                <div class="form-item" style="margin-bottom:10px;"><label>Aksi / Input:</label><select id="hutangAksi" onchange="toggleHutangForm()"><option value="TambahHutang">Catat Hutang Baru</option><option value="BayarAngsuran">Bayar Angsuran / Pelunasan</option></select></div>
+                <div class="form-item" style="margin-bottom:10px;"><label>Keterangan / Pemberi Hutang:</label><input type="text" id="hutangKet" placeholder="Hutang ke Toko / Pihak Lain"></div>
+                <div class="form-item" style="margin-bottom:10px;"><label>Nominal (Rp):</label><input type="number" id="hutangNominal" placeholder="Contoh: 1000000"></div>
+                <button class="action-btn" onclick="prosesHutang()" style="background-color: #e74c3c;">Simpan Data Hutang</button>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px;">
+            <h4 style="margin: 0;">Aliran Kas Sanggar Bulanan & Total Rekapitulasi</h4>
+            <div style="max-width: 200px;"><input type="month" id="filterKasBulan" onchange="renderKasHutang()"></div>
+        </div>
+        <table>
+            <thead><tr><th>Tanggal</th><th>Jenis</th><th>Sumber/Tujuan</th><th>Uraian / Keperluan</th><th>Nominal</th><th>Aksi</th></tr></thead>
+            <tbody id="tblKasSanggar"></tbody>
+            <tfoot id="tftKasSanggar"></tfoot>
+        </table>
+
+        <h4 style="margin-top: 25px;">Daftar Hutang & Riwayat Angsuran Pelunasan</h4>
+        <table>
+            <thead><tr><th>Tanggal</th><th>Keterangan Hutang</th><th>Total Awal</th><th>Sisa Hutang</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="tblHutang"></tbody>
+        </table>
+    </div>
+
+    <!-- TAB 6: JADWAL -->
+    <div id="Tab6" class="tabcontent">
+        <h3>Manajemen Jadwal Latihan (Rutin Mingguan & Tanggal Spesifik)</h3>
+        <div class="note-box">
+            📌 <strong>Ketentuan Jadwal:</strong><br>
+            • <strong>Rutin Mingguan:</strong> Berulang otomatis setiap hari yang dipilih.<br>
+            • <strong>Tanggal Spesifik (Opsional):</strong> Hanya berlaku pada tanggal tertentu saja.<br>
+            • <strong>Lokasi:</strong> Pilih apakah latihan dilaksanakan <em>Di Sanggar</em> atau <em>Di Rumah Murid</em>.<br>
+            • <strong>Penggabungan Slot:</strong> Kelas Reguler di jam dan hari/tanggal yang sama akan otomatis digabung dalam satu kartu slot waktu.
+        </div>
+        
+        <div class="form-group">
+            <div class="form-item">
+                <label>Tipe Jadwal:</label>
+                <select id="jadwalTipe" onchange="toggleFormJadwal()">
+                    <option value="Rutin">Rutin Mingguan</option>
+                    <option value="Opsional">Tanggal Spesifik (Opsional)</option>
+                </select>
+            </div>
+            
+            <div class="form-item" id="divHari">
+                <label>Hari Latihan:</label>
+                <select id="jadwalHari">
+                    <option value="Senin">Senin</option><option value="Selasa">Selasa</option>
+                    <option value="Rabu">Rabu</option><option value="Kamis">Kamis</option>
+                    <option value="Jumat">Jumat</option><option value="Sabtu">Sabtu</option>
+                    <option value="Minggu">Minggu</option>
+                </select>
+            </div>
+
+            <div class="form-item" id="divTanggal" style="display: none;">
+                <label>Tanggal Spesifik:</label>
+                <input type="date" id="jadwalTanggal">
+            </div>
+
+            <div class="form-item"><label>Jam Latihan:</label><input type="time" id="jadwalJam"></div>
+            
+            <div class="form-item">
+                <label>Lokasi Latihan:</label>
+                <select id="jadwalLokasi">
+                    <option value="Di Sanggar">Di Sanggar</option>
+                    <option value="Di Rumah">Di Rumah (Privat/Kunjungan)</option>
+                </select>
+            </div>
+
+            <div class="form-item"><label>Pilih Murid:</label><select id="jadwalMurid"><option value="">-- Pilih Murid dari Database --</option></select></div>
+        </div>
+        <button class="action-btn" onclick="simpanJadwal()">📅 Tambah ke Slot Jadwal</button>
+
+        <!-- Bagian Tampilan Jadwal Rutin Mingguan -->
+        <h4 style="margin-top: 30px;">📅 Tampilan Jadwal Latihan (Digabungkan Berdasarkan Jam)</h4>
+        <div id="scheduleContainer" class="schedule-container"></div>
+    </div>
+
+    <!-- TAB 7: DATABASE MURID -->
+    <div id="Tab7" class="tabcontent">
+        <h3>Import Database Murid via Text (Format CSV)</h3>
+        <div style="background: #ebf8ff; padding: 15px; border: 1px dashed #3498db; border-radius: 6px; margin-bottom: 20px;">
+            <p style="margin:0 0 10px 0; font-size:13px; color:#2c5282;">
+                Paste data dengan urutan kolom: <strong>Nama Lengkap | Panggilan | Usia | Kelas | Instrumen | Biaya per Sesi</strong>
+            </p>
+            <textarea id="importArea" rows="3" placeholder="I Wayan Arya | Arya | 11 | Reguler | Gender Wayang | 100000"></textarea>
+            <button class="action-btn" onclick="prosesImport()">📥 Import Data Murid</button>
+        </div>
+
+        <h3>Database Murid Aktif</h3>
+        <table>
+            <thead>
+                <tr><th>Nama Lengkap</th><th>Panggilan</th><th>Usia</th><th>Kelas</th><th>Instrumen</th><th>Biaya / Sesi</th><th>Sisa Kuota</th><th>Aksi</th></tr>
+            </thead>
+            <tbody id="tblMurid"></tbody>
+        </table>
+    </div>
+
+    <script>
+        let dbMurid = JSON.parse(localStorage.getItem('sw_murid')) || [];
+        let dbTransaksi = JSON.parse(localStorage.getItem('sw_trx')) || [];
+        let dbJadwal = JSON.parse(localStorage.getItem('sw_jadwal')) || [];
+        let dbKas = JSON.parse(localStorage.getItem('sw_kas')) || [];
+        let dbHutang = JSON.parse(localStorage.getItem('sw_hutang')) || [];
+
+        function saveDB() {
+            localStorage.setItem('sw_murid', JSON.stringify(dbMurid));
+            localStorage.setItem('sw_trx', JSON.stringify(dbTransaksi));
+            localStorage.setItem('sw_jadwal', JSON.stringify(dbJadwal));
+            localStorage.setItem('sw_kas', JSON.stringify(dbKas));
+            localStorage.setItem('sw_hutang', JSON.stringify(dbHutang));
+        }
+
+        function formatRp(angka) { return "Rp " + parseInt(angka).toLocaleString('id-ID'); }
+        function getBulanIni() { return new Date().toISOString().slice(0, 7); }
+        function getHariIni() { return new Date().toISOString().split('T')[0]; }
+
+        window.onload = function() {
+            document.getElementById("defaultOpen").click();
+            document.getElementById("absTgl").value = getHariIni();
+            document.getElementById("sppBulan").value = getBulanIni();
+            document.getElementById("monitorBulan").value = getBulanIni();
+            document.getElementById("lapBulan").value = getBulanIni();
+            document.getElementById("filterKasBulan").value = getBulanIni();
+            document.getElementById("jadwalTanggal").value = getHariIni();
+            refreshSemuaDropdown();
+            renderMurid();
+            renderJadwal();
+            renderKasHutang();
+        };
+
+        function openTab(evt, tabName) {
+            let tabcontent = document.getElementsByClassName("tabcontent");
+            for (let i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+            let tablinks = document.getElementsByClassName("tablinks");
+            for (let i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+            
+            if(tabName === 'Tab3') renderMonitorSpp();
+            if(tabName === 'Tab4') renderLaporan();
+            if(tabName === 'Tab5') renderKasHutang();
+        }
+
+        function refreshSemuaDropdown() {
+            let optAll = '<option value="">-- Pilih Murid --</option>';
+            let optReg = '<option value="">-- Pilih Murid Reguler --</option>';
+            let optJdw = '<option value="">-- Pilih Murid dari Database --</option>';
+            
+            dbMurid.forEach(m => {
+                let text = `${m.panggilan} (${m.kelas}) - Kuota: ${m.kuota}x`;
+                optAll += `<option value="${m.id}">${text}</option>`;
+                optJdw += `<option value="${m.id}">${m.panggilan} (${m.kelas})</option>`;
+                if(m.kelas.toLowerCase() === 'reguler') {
+                    optReg += `<option value="${m.id}">${m.panggilan} (SPP: ${formatRp(m.biaya)})</option>`;
+                }
+            });
+
+            document.getElementById("topupMurid").innerHTML = optAll;
+            document.getElementById("absMurid").innerHTML = optAll;
+            document.getElementById("sppMurid").innerHTML = optReg;
+            document.getElementById("jadwalMurid").innerHTML = optJdw;
+        }
+
+        // --- TAB 7: DATABASE MURID (Dengan Fitur Edit) ---
+        function prosesImport() {
+            let text = document.getElementById("importArea").value.trim();
+            if(!text) return;
+            let lines = text.split("\n");
+            let count = 0;
+            lines.forEach(line => {
+                let col = line.split(/\t|\||,/);
+                if(col.length >= 2 && col[0].trim() !== "") {
+                    let biaya = col[5] ? parseInt(col[5].replace(/[^0-9]/g, '')) || 50000 : 50000;
+                    dbMurid.push({
+                        id: 'M_' + Date.now() + Math.random().toString(36).substr(2,4),
+                        lengkap: col[0].trim(),
+                        panggilan: col[1] ? col[1].trim() : col[0].trim(),
+                        usia: col[2] ? col[2].trim() : "-",
+                        kelas: col[3] ? col[3].trim() : "Reguler",
+                        instrumen: col[4] ? col[4].trim() : "Gender Wayang",
+                        biaya: biaya,
+                        kuota: 0
+                    });
+                    count++;
+                }
+            });
+            if(count > 0) {
+                saveDB(); renderMurid(); refreshSemuaDropdown();
+                alert(count + " Data murid berhasil diimport!");
+                document.getElementById("importArea").value = "";
+            }
+        }
+
+        function editMurid(id) {
+            let m = dbMurid.find(x => x.id === id);
+            if(!m) return;
+            let nLengkap = prompt("Edit Nama Lengkap:", m.lengkap);
+            if(nLengkap === null) return;
+            let nPanggilan = prompt("Edit Nama Panggilan:", m.panggilan);
+            if(nPanggilan === null) return;
+            let nUsia = prompt("Edit Usia:", m.usia);
+            if(nUsia === null) return;
+            let nKelas = prompt("Edit Kelas (Reguler/Privat):", m.kelas);
+            if(nKelas === null) return;
+            let nInstrumen = prompt("Edit Instrumen:", m.instrumen);
+            if(nInstrumen === null) return;
+            let nBiaya = prompt("Edit Biaya per Sesi / SPP:", m.biaya);
+            if(nBiaya === null) return;
+
+            m.lengkap = nLengkap.trim();
+            m.panggilan = nPanggilan.trim();
+            m.usia = nUsia.trim();
+            m.kelas = nKelas.trim();
+            m.instrumen = nInstrumen.trim();
+            m.biaya = parseInt(nBiaya) || m.biaya;
+
+            saveDB(); renderMurid(); refreshSemuaDropdown();
+            alert("Data murid berhasil diperbarui!");
+        }
+
+        function hapusMurid(id) {
+            if(confirm("Hapus murid ini?")) {
+                dbMurid = dbMurid.filter(m => m.id !== id);
+                saveDB(); renderMurid(); refreshSemuaDropdown();
+            }
+        }
+
+        function renderMurid() {
+            let tbody = document.getElementById("tblMurid");
+            tbody.innerHTML = "";
+            dbMurid.forEach(m => {
+                tbody.innerHTML += `<tr>
+                    <td>${m.lengkap}</td><td>${m.panggilan}</td><td>${m.usia}</td>
+                    <td><span class="badge ${m.kelas.toLowerCase()==='reguler'?'bg-blue':'bg-purple'}">${m.kelas}</span></td>
+                    <td>${m.instrumen}</td><td>${formatRp(m.biaya)}</td>
+                    <td><b>${m.kuota}</b></td>
+                    <td>
+                        <button class="btn-edit" onclick="editMurid('${m.id}')">Edit</button>
+                        <button class="btn-del" onclick="hapusMurid('${m.id}')">Hapus</button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        // --- TAB 1: ABSENSI & TOPUP ---
+        function hitungTopup() {
+            let id = document.getElementById("topupMurid").value;
+            let nom = parseInt(document.getElementById("topupNominal").value) || 0;
+            let field = document.getElementById("topupHasil");
+            if(!id || nom <= 0) { field.value = "-"; return; }
+            let m = dbMurid.find(x => x.id === id);
+            if(m && m.biaya > 0) {
+                let pertemuan = Math.floor(nom / m.biaya);
+                field.value = `${pertemuan}x Pertemuan`;
+            }
+        }
+
+        function simpanTopup() {
+            let id = document.getElementById("topupMurid").value;
+            let nom = parseInt(document.getElementById("topupNominal").value) || 0;
+            if(!id || nom <= 0) return alert("Isi data dengan benar!");
+            let m = dbMurid.find(x => x.id === id);
+            let pertemuan = Math.floor(nom / m.biaya);
+            m.kuota += pertemuan;
+            saveDB(); renderMurid(); refreshSemuaDropdown();
+            document.getElementById("topupNominal").value = "";
+            document.getElementById("topupHasil").value = "";
+            alert(`Berhasil! Sisa kuota ${m.panggilan} sekarang: ${m.kuota} pertemuan.`);
+        }
+
+        function simpanAbsen() {
+            let tgl = document.getElementById("absTgl").value;
+            let idMurid = document.getElementById("absMurid").value;
+            let pelatih = document.getElementById("absPelatih").value;
+            if(!tgl || !idMurid) return alert("Isi Tanggal dan Murid!");
+
+            let m = dbMurid.find(x => x.id === idMurid);
+            if(m.kuota > 0) { m.kuota -= 1; } 
+            else { alert(`Peringatan: Kuota ${m.panggilan} habis (0)! Absen dicatat tanpa potong kuota.`); }
+
+            let total = m.biaya;
+            let kas = total * 0.20;
+            let honor = total * 0.80;
+
+            dbTransaksi.push({
+                id: 'TRX_' + Date.now(),
+                tipe: 'Absensi',
+                tglBulan: tgl,
+                idMurid: m.id,
+                namaMurid: m.panggilan,
+                pelatih: pelatih,
+                total: total,
+                kas: kas,
+                honor: honor
+            });
+
+            saveDB(); renderMurid(); refreshSemuaDropdown();
+            alert(`Absensi dicatat!\nBiaya: ${formatRp(total)}\nKas (20%): ${formatRp(kas)} (${pelatih})\nHonor (80%): ${formatRp(honor)}`);
+        }
+
+        // --- TAB 2 & 3: SPP REGULER & MONITORING (Dengan Edit Status SPP) ---
+        function autoIsiSppNominal() {
+            let id = document.getElementById("sppMurid").value;
+            if(!id) { document.getElementById("sppNominal").value = ""; return; }
+            let m = dbMurid.find(x => x.id === id);
+            if(m) { document.getElementById("sppNominal").value = m.biaya; }
+        }
+
+        function simpanSpp() {
+            let bln = document.getElementById("sppBulan").value;
+            let idMurid = document.getElementById("sppMurid").value;
+            let pelatih = document.getElementById("sppPelatih").value;
+            let nom = parseInt(document.getElementById("sppNominal").value) || 0;
+
+            if(!bln || !idMurid || nom <= 0) return alert("Lengkapi form SPP!");
+            let m = dbMurid.find(x => x.id === idMurid);
+            
+            let cek = dbTransaksi.find(t => t.tipe === 'SPP' && t.tglBulan === bln && t.idMurid === m.id);
+            if(cek) return alert("Murid ini sudah membayar SPP untuk bulan " + bln);
+
+            let kas = nom * 0.20;
+            let honor = nom * 0.80;
+
+            dbTransaksi.push({
+                id: 'TRX_' + Date.now(),
+                tipe: 'SPP',
+                tglBulan: bln,
+                idMurid: m.id,
+                namaMurid: m.panggilan,
+                pelatih: pelatih,
+                total: nom,
+                kas: kas,
+                honor: honor
+            });
+
+            saveDB();
+            document.getElementById("sppNominal").value = "";
+            alert(`SPP Bulanan ${m.panggilan} untuk ${bln} LUNAS!`);
+        }
+
+        function renderMonitorSpp() {
+            let bln = document.getElementById("monitorBulan").value;
+            let tbody = document.getElementById("tblMonitorSpp");
+            tbody.innerHTML = "";
+            let muridReg = dbMurid.filter(m => m.kelas.toLowerCase() === 'reguler');
+            
+            if(muridReg.length === 0) { tbody.innerHTML = "<tr><td colspan='6'>Belum ada murid Reguler.</td></tr>"; return; }
+
+            muridReg.forEach(m => {
+                let trxSPP = dbTransaksi.find(t => t.tipe === 'SPP' && t.tglBulan === bln && t.idMurid === m.id);
+                let statusBadge = trxSPP ? `<span class="badge bg-green">✅ LUNAS</span>` : `<span class="badge bg-red">❌ BELUM BAYAR</span>`;
+                let aksiBtn = trxSPP ? 
+                    `<button class="btn-edit" onclick="ubahStatusSpp('${trxSPP.id}')">Ubah Pelatih/Nominal</button> <button class="btn-del" onclick="hapusTrxSpp('${trxSPP.id}')">Batalkan (Belum Bayar)</button>` :
+                    `<button class="action-btn" style="padding:4px 8px; margin-top:0; font-size:11px;" onclick="bayarSppCepat('${m.id}', '${bln}')">Set Lunas</button>`;
+
+                tbody.innerHTML += `<tr>
+                    <td>${m.lengkap} (${m.panggilan})</td>
+                    <td>${m.instrumen}</td>
+                    <td>${statusBadge}</td>
+                    <td>${trxSPP ? formatRp(trxSPP.total) : formatRp(m.biaya)}</td>
+                    <td>${trxSPP ? trxSPP.pelatih : '-'}</td>
+                    <td>${aksiBtn}</td>
+                </tr>`;
+            });
+        }
+
+        function bayarSppCepat(idMurid, bln) {
+            let m = dbMurid.find(x => x.id === idMurid);
+            let pelatih = prompt("Pilih Pelatih Penerima (Ganggas / Bayu):", "Ganggas");
+            if(!pelatih) return;
+            let nom = m.biaya;
+            let kas = nom * 0.20;
+            let honor = nom * 0.80;
+
+            dbTransaksi.push({
+                id: 'TRX_' + Date.now(),
+                tipe: 'SPP',
+                tglBulan: bln,
+                idMurid: m.id,
+                namaMurid: m.panggilan,
+                pelatih: pelatih,
+                total: nom,
+                kas: kas,
+                honor: honor
+            });
+            saveDB(); renderMonitorSpp();
+            alert("Status SPP berhasil diubah menjadi Lunas!");
+        }
+
+        function ubahStatusSpp(trxId) {
+            let t = dbTransaksi.find(x => x.id === trxId);
+            if(!t) return;
+            let nPelatih = prompt("Ubah Pelatih Penerima (Ganggas / Bayu):", t.pelatih);
+            if(nPelatih === null) return;
+            let nNom = prompt("Ubah Nominal SPP:", t.total);
+            if(nNom === null) return;
+
+            t.pelatih = nPelatih.trim();
+            t.total = parseInt(nNom) || t.total;
+            t.kas = t.total * 0.20;
+            t.honor = t.total * 0.80;
+
+            saveDB(); renderMonitorSpp();
+            alert("Data SPP berhasil diperbarui!");
+        }
+
+        function hapusTrxSpp(trxId) {
+            if(confirm("Batalkan pembayaran SPP ini (Ubah status menjadi Belum Bayar)?")) {
+                dbTransaksi = dbTransaksi.filter(x => x.id !== trxId);
+                saveDB(); renderMonitorSpp();
+            }
+        }
+
+        // --- TAB 4: KEUANGAN & HONOR (Dengan Fitur Edit & Hapus Transaksi) ---
+        function renderLaporan() {
+            let blnFilter = document.getElementById("lapBulan").value;
+            let tbody = document.getElementById("tblLaporan");
+            tbody.innerHTML = "";
+            
+            let tBayu = 0, kBayu = 0, tGanggas = 0, kGanggas = 0, tGlobal = 0;
+
+            dbTransaksi.forEach(t => {
+                if(t.tglBulan.startsWith(blnFilter)) {
+                    tGlobal += t.total;
+                    if(t.pelatih === 'Bayu') { tBayu += t.honor; kBayu += t.kas; }
+                    if(t.pelatih === 'Ganggas') { tGanggas += t.honor; kGanggas += t.kas; }
+
+                    tbody.innerHTML += `<tr>
+                        <td>${t.tglBulan}</td>
+                        <td><span class="badge ${t.tipe==='SPP'?'bg-blue':'bg-green'}">${t.tipe}</span></td>
+                        <td>${t.namaMurid}</td>
+                        <td>${t.pelatih}</td>
+                        <td>${formatRp(t.total)}</td>
+                        <td style="color:#d35400;">${formatRp(t.kas)}</td>
+                        <td style="color:#27ae60;">${formatRp(t.honor)}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editLaporan('${t.id}')">Edit</button>
+                            <button class="btn-del" onclick="hapusLaporan('${t.id}')">Hapus</button>
+                        </td>
+                    </tr>`;
+                }
+            });
+
+            document.getElementById("totGanggas").innerText = formatRp(tGanggas);
+            document.getElementById("kasGanggas").innerText = formatRp(kGanggas);
+            document.getElementById("totBayu").innerText = formatRp(tBayu);
+            document.getElementById("kasBayu").innerText = formatRp(kBayu);
+            document.getElementById("totGlobal").innerText = formatRp(tGlobal);
+        }
+
+        function editLaporan(id) {
+            let t = dbTransaksi.find(x => x.id === id);
+            if(!t) return;
+            let nPelatih = prompt("Ubah Pelatih (Ganggas / Bayu):", t.pelatih);
+            if(nPelatih === null) return;
+            let nTotal = prompt("Ubah Total Biaya:", t.total);
+            if(nTotal === null) return;
+
+            t.pelatih = nPelatih.trim();
+            t.total = parseInt(nTotal) || t.total;
+            t.kas = t.total * 0.20;
+            t.honor = t.total * 0.80;
+
+            saveDB(); renderLaporan();
+            alert("Laporan berhasil diperbarui!");
+        }
+
+        function hapusLaporan(id) {
+            if(confirm("Hapus catatan transaksi ini dari laporan?")) {
+                dbTransaksi = dbTransaksi.filter(x => x.id !== id);
+                saveDB(); renderLaporan();
+            }
+        }
+
+        // --- TAB 5: KAS SANGGAR & HUTANG (Dengan Fitur Edit Kas & Edit Hutang) ---
+        function tambahKasSanggar() {
+            let jenis = document.getElementById("kasJenis").value;
+            let sumber = document.getElementById("kasSumber").value;
+            let keperluan = document.getElementById("kasKeperluan").value;
+            let nominal = parseInt(document.getElementById("kasNominal").value) || 0;
+
+            if(!sumber || nominal <= 0) return alert("Isi sumber dan nominal dengan benar!");
+
+            dbKas.push({ id: 'K_' + Date.now(), tgl: getHariIni(), jenis, sumber, keperluan, nominal });
+            saveDB(); renderKasHutang();
+            document.getElementById("kasSumber").value = "";
+            document.getElementById("kasKeperluan").value = "";
+            document.getElementById("kasNominal").value = "";
+            alert("Transaksi kas berhasil disimpan!");
+        }
+
+        function editKas(id) {
+            let k = dbKas.find(x => x.id === id);
+            if(!k) return;
+            let nSumber = prompt("Edit Sumber / Tujuan:", k.sumber);
+            if(nSumber === null) return;
+            let nKeperluan = prompt("Edit Uraian / Keperluan:", k.keperluan);
+            if(nKeperluan === null) return;
+            let nNom = prompt("Edit Nominal:", k.nominal);
+            if(nNom === null) return;
+
+            k.sumber = nSumber.trim();
+            k.keperluan = nKeperluan.trim();
+            k.nominal = parseInt(nNom) || k.nominal;
+
+            saveDB(); renderKasHutang();
+            alert("Data kas berhasil diperbarui!");
+        }
+
+        function hapusKas(id) {
+            if(confirm("Hapus transaksi kas ini?")) {
+                dbKas = dbKas.filter(x => x.id !== id);
+                saveDB(); renderKasHutang();
+            }
+        }
+
+        function toggleHutangForm() {
+            let aksi = document.getElementById("hutangAksi").value;
+            let label = document.getElementById("hutangKet").previousElementSibling;
+            if(aksi === 'BayarAngsuran') {
+                label.innerText = "Pilih / Keterangan Hutang yang Dibayar:";
+            } else {
+                label.innerText = "Keterangan / Pemberi Hutang:";
+            }
+        }
+
+        function prosesHutang() {
+            let aksi = document.getElementById("hutangAksi").value;
+            let ket = document.getElementById("hutangKet").value;
+            let nominal = parseInt(document.getElementById("hutangNominal").value) || 0;
+
+            if(!ket || nominal <= 0) return alert("Isi keterangan dan nominal!");
+
+            if(aksi === 'TambahHutang') {
+                dbHutang.push({ id: 'H_' + Date.now(), tgl: getHariIni(), keterangan: ket, totalAwal: nominal, sisa: nominal, status: 'Belum Lunas' });
+            } else {
+                let h = dbHutang.find(x => x.keterangan.toLowerCase().includes(ket.toLowerCase()) && x.status === 'Belum Lunas');
+                if(!h) return alert("Data hutang aktif tidak ditemukan!");
+                h.sisa -= nominal;
+                if(h.sisa <= 0) { h.sisa = 0; h.status = 'Lunas'; }
+                dbKas.push({ id: 'K_' + Date.now(), tgl: getHariIni(), jenis: 'Pengeluaran', sumber: 'Pelunasan Hutang', keperluan: 'Angsuran Hutang: ' + h.keterangan, nominal });
+            }
+
+            saveDB(); renderKasHutang();
+            document.getElementById("hutangKet").value = "";
+            document.getElementById("hutangNominal").value = "";
+            alert("Data hutang berhasil diperbarui!");
+        }
+
+        function editHutang(id) {
+            let h = dbHutang.find(x => x.id === id);
+            if(!h) return;
+            let nKet = prompt("Edit Keterangan Hutang:", h.keterangan);
+            if(nKet === null) return;
+            let nSisa = prompt("Edit Sisa Hutang:", h.sisa);
+            if(nSisa === null) return;
+
+            h.keterangan = nKet.trim();
+            h.sisa = parseInt(nSisa) || h.sisa;
+            if(h.sisa <= 0) { h.sisa = 0; h.status = 'Lunas'; } else { h.status = 'Belum Lunas'; }
+
+            saveDB(); renderKasHutang();
+            alert("Data hutang berhasil diperbarui!");
+        }
+
+        function hapusHutang(id) {
+            if(confirm("Hapus data hutang ini?")) {
+                dbHutang = dbHutang.filter(x => x.id !== id);
+                saveDB(); renderKasHutang();
+            }
+        }
+
+        function renderKasHutang() {
+            let filterBulan = document.getElementById("filterKasBulan").value;
+            let tbodyKas = document.getElementById("tblKasSanggar");
+            let tftKas = document.getElementById("tftKasSanggar");
+            let tbodyHutang = document.getElementById("tblHutang");
+            tbodyKas.innerHTML = ""; tbodyHutang.innerHTML = ""; tftKas.innerHTML = "";
+
+            let saldoTotalGlobal = 0;
+            dbKas.forEach(k => {
+                if(k.jenis === 'Pemasukan') saldoTotalGlobal += k.nominal;
+                else saldoTotalGlobal -= k.nominal;
+            });
+            document.getElementById("saldoKasSanggar").innerText = formatRp(saldoTotalGlobal);
+
+            let totPemasukanBulan = 0;
+            let totPengeluaranBulan = 0;
+            let countBulan = 0;
+
+            dbKas.forEach(k => {
+                if(!filterBulan || k.tgl.startsWith(filterBulan)) {
+                    countBulan++;
+                    if(k.jenis === 'Pemasukan') totPemasukanBulan += k.nominal;
+                    else totPengeluaranBulan += k.nominal;
+
+                    tbodyKas.innerHTML += `<tr>
+                        <td>${k.tgl}</td>
+                        <td><span class="badge ${k.jenis==='Pemasukan'?'bg-green':'bg-red'}">${k.jenis}</span></td>
+                        <td>${k.sumber}</td><td>${k.keperluan}</td><td>${formatRp(k.nominal)}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editKas('${k.id}')">Edit</button>
+                            <button class="btn-del" onclick="hapusKas('${k.id}')">Hapus</button>
+                        </td>
+                    </tr>`;
+                }
+            });
+
+            if(countBulan === 0) {
+                tbodyKas.innerHTML = `<tr><td colspan="6" style="text-align:center;">Tidak ada data kas pada bulan ini.</td></tr>`;
+            } else {
+                let selisihBulan = totPemasukanBulan - totPengeluaranBulan;
+                tftKas.innerHTML = `
+                    <tr style="background-color: #edf2f7; font-weight: bold;">
+                        <td colspan="4" style="text-align: right;">Total Pemasukan Bulan Ini:</td>
+                        <td colspan="2" style="color: #27ae60;">${formatRp(totPemasukanBulan)}</td>
+                    </tr>
+                    <tr style="background-color: #edf2f7; font-weight: bold;">
+                        <td colspan="4" style="text-align: right;">Total Pengeluaran Bulan Ini:</td>
+                        <td colspan="2" style="color: #e74c3c;">${formatRp(totPengeluaranBulan)}</td>
+                    </tr>
+                    <tr style="background-color: #e2e8f0; font-weight: bold;">
+                        <td colspan="4" style="text-align: right;">Arus Kas Bersih Bulan Ini:</td>
+                        <td colspan="2" style="color: ${selisihBulan >= 0 ? '#27ae60' : '#e74c3c'};">${formatRp(selisihBulan)}</td>
+                    </tr>
+                `;
+            }
+
+            let totalHutang = 0;
+            dbHutang.forEach(h => {
+                if(h.status === 'Belum Lunas') totalHutang += h.sisa;
+                tbodyHutang.innerHTML += `<tr>
+                    <td>${h.tgl}</td><td>${h.keterangan}</td><td>${formatRp(h.totalAwal)}</td>
+                    <td style="color:#e74c3c; font-weight:bold;">${formatRp(h.sisa)}</td>
+                    <td><span class="badge ${h.status==='Lunas'?'bg-green':'bg-orange'}">${h.status}</span></td>
+                    <td>
+                        <button class="btn-edit" onclick="editHutang('${h.id}')">Edit</button>
+                        <button class="btn-del" onclick="hapusHutang('${h.id}')">Hapus</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById("totalSisaHutang").innerText = formatRp(totalHutang);
+        }
+
+        // --- TAB 6: JADWAL (Rutin Mingguan & Tanggal Spesifik + Lokasi + Penggabungan Slot) ---
+        function toggleFormJadwal() {
+            let tipe = document.getElementById("jadwalTipe").value;
+            if(tipe === 'Rutin') {
+                document.getElementById("divHari").style.display = "block";
+                document.getElementById("divTanggal").style.display = "none";
+            } else {
+                document.getElementById("divHari").style.display = "none";
+                document.getElementById("divTanggal").style.display = "block";
+            }
+        }
+
+        function simpanJadwal() {
+            let tipe = document.getElementById("jadwalTipe").value;
+            let jam = document.getElementById("jadwalJam").value;
+            let lokasi = document.getElementById("jadwalLokasi").value;
+            let idMurid = document.getElementById("jadwalMurid").value;
+
+            if(!jam || !idMurid) return alert("Lengkapi form jam dan murid!");
+
+            let m = dbMurid.find(x => x.id === idMurid);
+            let hari = tipe === 'Rutin' ? document.getElementById("jadwalHari").value : '';
+            let tanggal = tipe === 'Opsional' ? document.getElementById("jadwalTanggal").value : '';
+
+            if(tipe === 'Opsional' && !tanggal) return alert("Pilih tanggal spesifik untuk jadwal ini!");
+
+            if(m.kelas.toLowerCase() === 'privat') {
+                let bentrok = dbJadwal.find(j => {
+                    if(tipe === 'Rutin' && j.tipe === 'Rutin' && j.hari === hari && j.jam === jam) return true;
+                    if(tipe === 'Opsional' && j.tipe === 'Opsional' && j.tanggal === tanggal && j.jam === jam) return true;
+                    return false;
+                });
+                if(bentrok) {
+                    return alert("Gagal! Slot jam ini sudah terisi. Kelas Privat hanya boleh diisi maksimal 1 orang per slot jam.");
+                }
+            }
+
+            dbJadwal.push({
+                id: 'J_' + Date.now() + Math.random().toString(36).substr(2,3),
+                tipe: tipe,
+                hari: hari,
+                tanggal: tanggal,
+                jam: jam,
+                lokasi: lokasi,
+                idMurid: m.id,
+                namaMurid: m.panggilan,
+                kelas: m.kelas,
+                instrumen: m.instrumen
+            });
+
+            saveDB(); renderJadwal();
+            alert("Jadwal latihan berhasil ditambahkan!");
+        }
+
+        function hapusJadwal(id) {
+            if(confirm("Hapus jadwal latihan ini?")) {
+                dbJadwal = dbJadwal.filter(j => j.id !== id);
+                saveDB(); renderJadwal();
+            }
+        }
+
+        function renderJadwal() {
+            let container = document.getElementById("scheduleContainer");
+            container.innerHTML = "";
+            let daftarHari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+
+            daftarHari.forEach(h => {
+                let slotHari = dbJadwal.filter(j => j.tipe === 'Rutin' && j.hari === h);
+                
+                let groupedByTime = {};
+                slotHari.forEach(s => {
+                    if(!groupedByTime[s.jam]) groupedByTime[s.jam] = [];
+                    groupedByTime[s.jam].push(s);
+                });
+
+                let sortedTimes = Object.keys(groupedByTime).sort();
+
+                let slotHtml = "";
+                if(sortedTimes.length === 0) {
+                    slotHtml = `<p style="color:#a0aec0; font-size:12px; text-align:center; margin:15px 0;">Belum ada jadwal</p>`;
+                } else {
+                    sortedTimes.forEach(jam => {
+                        let muridList = groupedByTime[jam];
+                        let isPrivat = muridList[0].kelas.toLowerCase() === 'privat';
+                        let cardClass = isPrivat ? 'slot-card privat' : 'slot-card reguler';
+                        let lokasiBadge = muridList[0].lokasi === 'Di Sanggar' ? 'bg-green' : 'bg-orange';
+
+                        let muridDetailsHtml = "";
+                        muridList.forEach(m => {
+                            let badgeClass = m.kelas.toLowerCase() === 'privat' ? 'bg-purple' : 'bg-blue';
+                            muridDetailsHtml += `
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px; border-top:1px solid #edf2f7; padding-top:3px;">
+                                    <span>👤 <b>${m.namaMurid}</b> <span class="badge ${badgeClass}">${m.kelas}</span> <small>(${m.instrumen})</small></span>
+                                    <button class="del-slot" onclick="hapusJadwal('${m.id}')" title="Hapus Murid ini">✕</button>
+                                </div>
+                            `;
+                        });
+
+                        slotHtml += `
+                            <div class="${cardClass}">
+                                <div class="slot-time">
+                                    <span>⏰ ${jam} WITA</span>
+                                    <span class="badge ${lokasiBadge}">${muridList[0].lokasi}</span>
+                                </div>
+                                <div class="slot-details">
+                                    ${muridDetailsHtml}
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                container.innerHTML += `
+                    <div class="day-column">
+                        <div class="day-header">${h}</div>
+                        <div class="day-body">${slotHtml}</div>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
